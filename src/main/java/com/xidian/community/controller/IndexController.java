@@ -1,15 +1,21 @@
 package com.xidian.community.controller;
 
+import com.xidian.community.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class HelloController {
+public class IndexController {
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/")
-    public String hello(@RequestParam(name = "name", required = false) String name, Model model) {
-        model.addAttribute("name", name);
+    public String hello() {
+
+
         return "index";
     }
 }

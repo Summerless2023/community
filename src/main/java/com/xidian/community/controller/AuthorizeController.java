@@ -2,6 +2,8 @@ package com.xidian.community.controller;
 
 import com.xidian.community.dto.AccessTokenDTO;
 import com.xidian.community.dto.GithubUser;
+import com.xidian.community.mapper.UserMapper;
+import com.xidian.community.model.User;
 import com.xidian.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -25,8 +30,10 @@ public class AuthorizeController {
     @Value("${github.redirect.url}")
     private String redirectUrl;
 
+    @Autowired
+    private UserMapper userMapper;
     @GetMapping("/callback")
-    public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state, HttpServletRequest request) {
+    public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state, HttpServletRequest request, HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setClient_id(clientId);
@@ -34,10 +41,19 @@ public class AuthorizeController {
         accessTokenDTO.setRedirect_url(redirectUrl);
         accessTokenDTO.setClient_secret(clientSecret);
         String accesstoken = githubProvider.getAccessToken(accessTokenDTO);
-        GithubUser user = githubProvider.getUser(accesstoken);
-        if (user != null){
+        GithubUser githubUser = githubProvider.getUser(accesstoken);
+        if (githubUser != null){
             //登录成功
-            request.getSession().setAttribute("user",user);
+            User user = new User();
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            System.out.println(user);
+            userMapper.insert(user);
+            response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }
         else
