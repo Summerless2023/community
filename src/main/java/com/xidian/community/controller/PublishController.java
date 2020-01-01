@@ -25,7 +25,6 @@ public class PublishController {
 
     @GetMapping("/publish")
     public String publish() {
-        System.out.println("getmapping");
         return "publish";
     }
 
@@ -35,7 +34,6 @@ public class PublishController {
                             @RequestParam("tag") String tag,
                             HttpServletRequest request,
                             Model model) {
-        System.out.println("#######");
         User user = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie :
@@ -50,7 +48,6 @@ public class PublishController {
             }
         }
         if(user == null){
-            System.out.println("########");
             model.addAttribute("error","用户未登录");
             return "publish";
         }
