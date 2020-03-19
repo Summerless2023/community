@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class IndexController {
+
     @Autowired
     private UserMapper userMapper;
     @GetMapping("/")

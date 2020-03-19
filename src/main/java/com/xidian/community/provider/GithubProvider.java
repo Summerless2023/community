@@ -3,8 +3,8 @@ package com.xidian.community.provider;
 import java.io.IOException;
 
 import com.alibaba.fastjson.JSON;
-import com.xidian.community.dto.AccessTokenDTO;
-import com.xidian.community.dto.GithubUser;
+import com.xidian.community.model.dto.AccessTokenDTO;
+import com.xidian.community.model.dto.GithubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 

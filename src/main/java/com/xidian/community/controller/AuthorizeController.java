@@ -1,13 +1,12 @@
 package com.xidian.community.controller;
 
-import com.xidian.community.dto.AccessTokenDTO;
-import com.xidian.community.dto.GithubUser;
+import com.xidian.community.model.dto.AccessTokenDTO;
+import com.xidian.community.model.dto.GithubUser;
 import com.xidian.community.mapper.UserMapper;
 import com.xidian.community.model.User;
 import com.xidian.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +21,9 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
-
+    @Autowired
+    private UserMapper userMapper;
+    
     @Value("${github.client.id}")
     private String clientId;
     @Value("${github.client.secret}")
@@ -30,8 +31,7 @@ public class AuthorizeController {
     @Value("${github.redirect.url}")
     private String redirectUrl;
 
-    @Autowired
-    private UserMapper userMapper;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state, HttpServletRequest request, HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
